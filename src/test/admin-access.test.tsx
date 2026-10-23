@@ -15,7 +15,7 @@ vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => state.navigate,
   useRouterState: () => "/admin",
   Link: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-  createFileRoute: () => (options: unknown) => options,
+  createFileRoute: () => (options: unknown) => ({ options }),
 }));
 vi.mock("@tanstack/react-query", () => ({ useQuery: () => ({ data: undefined }) }));
 vi.mock("@/lib/microfix/auth", () => ({ useAuth: () => ({ user: state.user, ready: true, logout: vi.fn() }) }));
@@ -70,7 +70,8 @@ describe("Super-admin access", () => {
     ["ASSISTANT", "org-1", "/"],
   ] as const)("sends %s from login to %s", async (role, org, destination) => {
     state.user = account(role, org);
-    const Login = LoginRoute.component;
+    const Login = LoginRoute.options.component;
+    if (!Login || typeof Login !== "function") throw new Error("Missing login component");
     render(<Login />);
     await waitFor(() => expect(state.navigate).toHaveBeenCalledWith({ to: destination }));
   });
