@@ -16,9 +16,15 @@ import type { Appointment, AppointmentStatus, OrganizationContext } from "@/type
 
 export const Route = createFileRoute("/")({
   // ?dia=AAAA-MM-DD abre la agenda en ese día (lo usa el Centro de Notificaciones).
-  validateSearch: (search: Record<string, unknown>): { dia?: string } => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { dia?: string; abrir?: "notificaciones" | "pausados" } => {
     const dia = search["dia"];
-    return typeof dia === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dia) ? { dia } : {};
+    const abrir = search["abrir"];
+    return {
+      ...(typeof dia === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dia) ? { dia } : {}),
+      ...(abrir === "notificaciones" || abrir === "pausados" ? { abrir } : {}),
+    };
   },
   head: () => ({
     meta: [

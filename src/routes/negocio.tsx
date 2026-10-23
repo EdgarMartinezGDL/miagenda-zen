@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
+import { PushNotificationsCard } from "@/components/PushNotificationsCard";
 import { Banner } from "@/components/Banner";
 import { Modal } from "@/components/Modal";
 import { Confirm } from "@/components/Confirm";

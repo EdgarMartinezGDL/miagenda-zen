@@ -8,6 +8,7 @@ import { Confirm } from "@/components/Confirm";
 import { NotificationBell } from "@/components/NotificationBell";
 import { organizationApi } from "@/lib/microfix/api";
 import { useAuth } from "@/lib/microfix/auth";
+import { disablePushOnLogout, refreshPush, registerServiceWorker } from "@/lib/microfix/push";
 import { applyBranding } from "@/lib/branding";
 import { useTheme } from "@/lib/theme";
 import type { Organization } from "@/types";
@@ -42,11 +43,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, ready, logout: endSession } = useAuth();
   const checked = ready && !!user;
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [bellAutoOpen, setBellAutoOpen] = useState<null | "desktop" | "mobile">(null);
 
   const orgId = user?.organizationId;
   const { data: org } = useQuery({
     queryKey: ["organization", orgId],
-    queryFn: () => organizationApi.get(orgId!) as Promise<Organization>,
+    queryFn: () => {
+      if (!orgId) throw new Error("No hay organización en la sesión");
+      return organizationApi.get(orgId) as Promise<Organization>;
+    },
     enabled: !!orgId,
   });
   const businessName = org?.headerName?.trim() || org?.name || "Mi Negocio";
@@ -66,7 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
+    .map((w) => w.charAt(0).toUpperCase())
     .join("");
 
   useEffect(() => {
@@ -77,10 +82,28 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (ready && !user) navigate({ to: "/login" });
   }, [ready, user, navigate]);
 
+  useEffect(() => {
+    if (!orgId) return;
+    registerServiceWorker().then(() => refreshPush(orgId));
+  }, [orgId]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const abrir = url.searchParams.get("abrir");
+    if (!abrir) return;
+    if (abrir === "notificaciones") {
+      setBellAutoOpen(window.matchMedia("(min-width: 768px)").matches ? "desktop" : "mobile");
+    }
+    // "pausados": la lista de pacientes en pausa llega en el bloque 5.6.
+    url.searchParams.delete("abrir");
+    window.history.replaceState(window.history.state, "", url.toString());
+  }, []);
+
   const logout = () => setLogoutOpen(true);
 
-  const confirmLogout = () => {
+  const confirmLogout = async () => {
     setLogoutOpen(false);
+    if (orgId) await disablePushOnLogout(orgId);
     endSession();
     navigate({ to: "/login" });
   };
@@ -114,7 +137,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <PlatformSeal />
           </div>
           <p className="truncate px-3 pb-2 text-xs text-muted-foreground">{user?.fullName}</p>
-          <NotificationBell orgId={orgId!} full />
+          <NotificationBell orgId={orgId ?? ""} full autoOpen={bellAutoOpen === "desktop"} />
           <ThemeToggle full />
           <button
             onClick={logout}
@@ -156,7 +179,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Bloque derecho: acciones + sello institucional */}
         <div className="flex shrink-0 flex-col items-end justify-center">
           <div className="flex items-center">
-            <NotificationBell orgId={orgId!} />
+            <NotificationBell orgId={orgId ?? ""} autoOpen={bellAutoOpen === "mobile"} />
             <ThemeToggle />
             <button
               onClick={logout}
@@ -201,7 +224,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         message="¿Estás seguro de que deseas cerrar sesión?"
         confirmLabel="Sí, salir"
         cancelLabel="Cancelar"
-        onConfirm={confirmLogout}
+        onConfirm={() => void confirmLogout()}
         onCancel={() => setLogoutOpen(false)}
       />
     </div>
