@@ -99,7 +99,7 @@ describe("Notification destination safety", () => {
       },
     });
     let pending: Promise<void> | undefined;
-    handlers.notificationclick?.({
+    handlers["notificationclick"]?.({
       notification: { data: { url: destination }, close: vi.fn() },
       waitUntil: (promise: Promise<void>) => { pending = promise; },
     });
