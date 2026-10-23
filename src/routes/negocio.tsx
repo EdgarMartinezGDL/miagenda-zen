@@ -1401,6 +1401,8 @@ function SettingsTab({ orgId }: { orgId: string }) {
         ))}
       </CardList>
 
+      <PushNotificationsCard orgId={orgId} />
+
       {open === "ia" && <AIModal orgId={orgId} onClose={() => setOpen(null)} />}
       {open === "marca" && <BrandingModal orgId={orgId} onClose={() => setOpen(null)} />}
       {open === "politica" && <PolicyModal orgId={orgId} onClose={() => setOpen(null)} />}
