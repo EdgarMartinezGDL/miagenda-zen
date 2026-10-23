@@ -388,3 +388,17 @@ export const notificationsApi = {
   markRead: (id: string) =>
     apiRequest<{ id: string; read: true; readAt: string }>(`/notifications/${id}/read`, { method: 'PATCH' }),
 };
+
+// --- Notificaciones push (Fase 5, 5.5) --------------------------------------
+// Solo la persona con sesión y en su propia organización.
+
+export const pushApi = {
+  /** 503 si el backend no tiene llaves VAPID (no ofrecer el botón). */
+  vapidPublicKey: () => apiRequest<{ publicKey: string }>('/push/vapid-public-key'),
+  /** 201 { id }. 403 PLAN_FEATURE_NOT_INCLUDED si el plan no incluye push (mensaje listo para mostrar). */
+  subscribe: (orgId: string, subscription: PushSubscriptionJSON) =>
+    apiRequest<{ id: string }>(`/push/subscriptions/${orgId}`, { method: 'POST', body: subscription }),
+  /** 204. Idempotente. */
+  unsubscribe: (orgId: string, endpoint: string) =>
+    apiRequest<void>(`/push/subscriptions/${orgId}`, { method: 'DELETE', body: { endpoint } }),
+};

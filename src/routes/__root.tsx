@@ -95,9 +95,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Gestiona citas, talleres, horarios y reportes de tu consultorio desde el celular.",
       },
       { property: "og:type", content: "website" },
+      { name: "theme-color", content: "#ffffff" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Agenda Zen" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/icons/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

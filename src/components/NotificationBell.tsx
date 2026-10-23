@@ -30,10 +30,19 @@ function ago(iso: string) {
   return new Date(iso).toLocaleDateString("es-MX", { day: "numeric", month: "short" });
 }
 
-export function NotificationBell({ orgId, full = false }: { orgId: string; full?: boolean }) {
+export function NotificationBell({ orgId, full = false, autoOpen = false }: {
+  orgId: string;
+  full?: boolean;
+  /** Abrir el panel al montar desde un aviso push. */
+  autoOpen?: boolean;
+}) {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (autoOpen) setOpen(true);
+  }, [autoOpen]);
 
   const { data: unread } = useQuery({
     queryKey: ["notifications-unread", orgId],

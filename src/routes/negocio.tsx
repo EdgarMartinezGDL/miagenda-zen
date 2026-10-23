@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useEffect, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
+import { PushNotificationsCard } from "@/components/PushNotificationsCard";
 import { Banner } from "@/components/Banner";
 import { Modal } from "@/components/Modal";
 import { Confirm } from "@/components/Confirm";
@@ -38,6 +39,8 @@ import type {
 export const Route = createFileRoute("/negocio")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Negocio — Mi Agenda Zen" },
       {
         name: "description",
@@ -1399,6 +1402,8 @@ function SettingsTab({ orgId }: { orgId: string }) {
           </li>
         ))}
       </CardList>
+
+      <PushNotificationsCard orgId={orgId} />
 
       {open === "ia" && <AIModal orgId={orgId} onClose={() => setOpen(null)} />}
       {open === "marca" && <BrandingModal orgId={orgId} onClose={() => setOpen(null)} />}

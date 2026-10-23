@@ -12,6 +12,8 @@ import { Moon, Sun } from "lucide-react";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Iniciar sesión — Mi Agenda Zen" },
       {
         name: "description",
