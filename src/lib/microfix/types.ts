@@ -35,7 +35,7 @@ export interface AuthUser {
   fullName: string;
   email: string;
   role: UserRole;
-  organizationId: string;
+  organizationId: string | null;
 }
 
 export interface LoginResponse {
@@ -447,4 +447,94 @@ export interface AppNotification {
 export interface NotificationPage {
   items: AppNotification[];
   nextCursor: string | null; // null = no hay más
+}
+
+// --- Súper Panel (Fase 5, 5.6) -------------------------------------------------
+// Solo el Súper Admin. Su sesión NO tiene organización (organizationId null).
+
+/** GET /organizations (el Súper Admin ve todas, más nuevas primero). */
+export interface AdminOrganization {
+  id: string;
+  name: string;
+  slug: string;
+  aiPausedAt: string | null;
+  createdAt: string;
+}
+
+/** GET /organizations/:id/plan-features. NONE = sin plan ni demo activa. */
+export interface PlanFeatures {
+  profile: 'PAID' | 'DEMO' | 'NONE';
+  planCode: string | null; // ESSENTIAL | PREMIUM; null en DEMO y NONE
+  maxLocations: number;
+  maxServices: number | null; // null = ilimitado
+  eventsEnabled: boolean;
+  smartCancellationEnabled: boolean;
+  ragEnabled: boolean;
+  pushEnabled: boolean;
+}
+
+/** GET /ai-usage/:organizationId — consumo de IA del periodo actual. */
+export type AiUsageReport =
+  | {
+      organizationId: string;
+      aiPausedAt: string | null;
+      profile: 'PAID' | 'DEMO';
+      period: {
+        start: string;
+        end: string;
+        tokenLimit: number;
+        consumedTokens: number;
+        reservedTokens: number;
+        percentUsed: number; // entero hacia abajo; puede pasar de 100 en planes de pago
+      };
+    }
+  | {
+      organizationId: string;
+      aiPausedAt: string | null;
+      profile: null;
+      period: null;
+      reason: 'NO_ENTITLEMENT';
+    };
+
+/** POST /ai-usage/:organizationId/pause | resume. changed:false = ya estaba así. */
+export interface AiPauseResult {
+  organizationId: string;
+  aiPausedAt: string | null;
+  changed: boolean;
+}
+
+export interface PlanExcessItem {
+  active: number;
+  max: number | null; // null = ilimitado
+  exceeded: boolean;
+}
+
+export type TokenAdjustment =
+  | 'RAISED_CURRENT_PERIOD'
+  | 'CURRENT_PERIOD_ALREADY_AT_LIMIT'
+  | 'NEXT_PERIOD'
+  | 'NO_PERIOD';
+
+/** PATCH /subscriptions/:organizationId/plan. Nunca desactiva nada: solo avisa del excedente. */
+export interface PlanChangeResult {
+  organizationId: string;
+  changed: boolean; // false = ya tenía ese plan (no trae direction ni tokenAdjustment)
+  fromPlan: string;
+  toPlan: string;
+  direction?: 'UPGRADE' | 'DOWNGRADE' | 'LATERAL';
+  tokenAdjustment?: TokenAdjustment;
+  excess: { locations: PlanExcessItem; services: PlanExcessItem };
+}
+
+/** GET /response-verifier/rejections — últimos 50, más nuevos primero. */
+export interface VerifierRejection {
+  id: string;
+  createdAt: string;
+  organizationId: string | null;
+  organizationName: string | null;
+  profile: string | null; // PAID | DEMO
+  planCode: string | null;
+  unknownPrices: string[]; // cifras tal como las escribió la IA
+  unknownTimes: string[];
+  paused: boolean; // true = el paciente quedó en atención humana (PREMIUM)
 }

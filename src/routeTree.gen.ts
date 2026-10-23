@@ -15,6 +15,8 @@ import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NegocioRouteImport } from './routes/negocio'
 import { Route as ReportesRouteImport } from './routes/reportes'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminCalidadRouteImport } from './routes/admin/calidad'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +48,16 @@ const ReportesRoute = ReportesRouteImport.update({
   path: '/reportes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCalidadRoute = AdminCalidadRouteImport.update({
+  id: '/admin/calidad',
+  path: '/admin/calidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +66,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
+  '/admin/calidad': typeof AdminCalidadRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +76,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
+  '/admin/calidad': typeof AdminCalidadRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +87,30 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
+  '/admin/calidad': typeof AdminCalidadRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/billing' | '/eventos' | '/login' | '/negocio' | '/reportes'
+  fullPaths:
+    | '/'
+    | '/billing'
+    | '/eventos'
+    | '/login'
+    | '/negocio'
+    | '/reportes'
+    | '/admin/calidad'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/billing' | '/eventos' | '/login' | '/negocio' | '/reportes'
+  to:
+    | '/'
+    | '/billing'
+    | '/eventos'
+    | '/login'
+    | '/negocio'
+    | '/reportes'
+    | '/admin/calidad'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -85,6 +119,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/negocio'
     | '/reportes'
+    | '/admin/calidad'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,6 +130,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NegocioRoute: typeof NegocioRoute
   ReportesRoute: typeof ReportesRoute
+  AdminCalidadRoute: typeof AdminCalidadRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -140,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/calidad': {
+      id: '/admin/calidad'
+      path: '/admin/calidad'
+      fullPath: '/admin/calidad'
+      preLoaderRoute: typeof AdminCalidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -150,6 +202,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NegocioRoute: NegocioRoute,
   ReportesRoute: ReportesRoute,
+  AdminCalidadRoute: AdminCalidadRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

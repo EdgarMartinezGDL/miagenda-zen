@@ -41,7 +41,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, ready, logout: endSession } = useAuth();
-  const checked = ready && !!user;
+  // El Súper Admin no tiene organización: su lugar es el Súper Panel (/admin).
+  const isAdmin = user?.role === "SUPER_ADMIN";
+  const checked = ready && !!user && !isAdmin;
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [bellAutoOpen, setBellAutoOpen] = useState<null | "desktop" | "mobile">(null);
 
@@ -80,7 +82,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (ready && !user) navigate({ to: "/login" });
-  }, [ready, user, navigate]);
+    else if (ready && isAdmin) navigate({ to: "/admin" });
+  }, [ready, user, isAdmin, navigate]);
 
   useEffect(() => {
     if (!orgId) return;
