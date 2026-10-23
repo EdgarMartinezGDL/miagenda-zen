@@ -17,6 +17,8 @@ import type { Event as ZenEvent, EventRegistration } from "@/types";
 export const Route = createFileRoute("/eventos")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Talleres y eventos — Mi Agenda Zen" },
       { name: "description", content: "Administra talleres, eventos y sus inscritos." },
       { property: "og:title", content: "Talleres y eventos — Mi Agenda Zen" },

@@ -14,6 +14,8 @@ import type { Appointment, AppointmentStatus, OrganizationContext } from "@/type
 export const Route = createFileRoute("/reportes")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Reportes — Mi Agenda Zen" },
       { name: "description", content: "Ocupación, cancelaciones, ingresos y servicios más agendados." },
       { property: "og:title", content: "Reportes — Mi Agenda Zen" },

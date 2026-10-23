@@ -39,6 +39,8 @@ import type {
 export const Route = createFileRoute("/negocio")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Negocio — Mi Agenda Zen" },
       {
         name: "description",
