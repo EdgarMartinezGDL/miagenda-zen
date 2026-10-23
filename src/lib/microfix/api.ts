@@ -7,6 +7,7 @@
 
 import { apiRequest } from './client';
 import type {
+  AdminOrganization, AiPauseResult, AiUsageReport, PlanChangeResult, PlanFeatures, VerifierRejection,
   AISettings,
   AppointmentStatus,
   AppointmentWithRelations,
@@ -401,4 +402,26 @@ export const pushApi = {
   /** 204. Idempotente. */
   unsubscribe: (orgId: string, endpoint: string) =>
     apiRequest<void>(`/push/subscriptions/${orgId}`, { method: 'DELETE', body: { endpoint } }),
+};
+
+// --- Súper Panel (Fase 5, 5.6) ----------------------------------------------
+// Solo el Súper Admin: el backend responde 403 a cualquier otro rol.
+
+export const adminApi = {
+  /** Todas las organizaciones, más nuevas primero. */
+  organizations: () => apiRequest<AdminOrganization[]>('/organizations'),
+  /** Plan de la organización (profile PAID/DEMO/NONE y planCode). */
+  planFeatures: (orgId: string) => apiRequest<PlanFeatures>(`/organizations/${orgId}/plan-features`),
+  /** Consumo de IA del periodo actual. Sin plan → period null y reason NO_ENTITLEMENT. */
+  aiUsage: (orgId: string) => apiRequest<AiUsageReport>(`/ai-usage/${orgId}`),
+  /** La IA deja de responder hasta reanudarla. Idempotente. */
+  pauseAi: (orgId: string) => apiRequest<AiPauseResult>(`/ai-usage/${orgId}/pause`, { method: 'POST' }),
+  /** Idempotente. */
+  resumeAi: (orgId: string) => apiRequest<AiPauseResult>(`/ai-usage/${orgId}/resume`, { method: 'POST' }),
+  /** Solo con suscripción (409 si es demo o no tiene plan). 400 si el código no existe. */
+  changePlan: (orgId: string, planCode: string) =>
+    apiRequest<PlanChangeResult>(`/subscriptions/${orgId}/plan`, { method: 'PATCH', body: { planCode } }),
+  /** Últimos 50 rechazos del verificador; organizationId opcional para filtrar. */
+  rejections: (organizationId?: string) =>
+    apiRequest<VerifierRejection[]>(`/response-verifier/rejections${qs({ organizationId })}`),
 };

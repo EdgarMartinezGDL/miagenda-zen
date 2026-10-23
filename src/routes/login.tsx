@@ -39,8 +39,9 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // El Súper Admin entra a su Súper Panel; los demás, a su agenda.
   useEffect(() => {
-    if (user) navigate({ to: "/" });
+    if (user) navigate({ to: user.role === "SUPER_ADMIN" ? "/admin" : "/" });
   }, [user, navigate]);
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -49,7 +50,7 @@ function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate({ to: "/" });
+      // La navegación la hace el efecto de arriba en cuanto llega el usuario.
     } catch (err) {
       setError(
         err instanceof ApiError && err.status === 401
