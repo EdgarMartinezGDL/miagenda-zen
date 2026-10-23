@@ -11,3 +11,4 @@
 
 - All backend data goes through src/lib/microfix/api.ts (MicroFix Cloud, VITE_API_URL); no mock data or direct fetch in screens — single source of truth.
 - Session via AuthProvider/useAuth in src/lib/microfix/auth.tsx, hydrated after mount — avoids SSR localStorage access.
+- Device push uses src/lib/microfix/push.ts and a dedicated public/sw.js with no app-shell caching; keep it separate from offline service workers to prevent stale previews.
