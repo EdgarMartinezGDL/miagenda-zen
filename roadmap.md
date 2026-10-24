@@ -1,6 +1,6 @@
 # Demos
-- [ ] Agregar tipos, llamadas de API, menú y pantalla del documento sin cambiar otras funciones.
-- [ ] Verificar contrato, acceso por rol y reglas de acciones y formularios con pruebas.
+- [x] Agregar tipos, llamadas de API, menú y pantalla del documento sin cambiar otras funciones.
+- [x] Verificar 35 pruebas: contrato, acceso por rol, acciones, normalización de correo, teléfono y limpieza de llaves; /admin/demos redirige sin sesión a /login, sin errores.
 - [ ] Verificar creación, QR, cancelación y conversión reales: falta dirección pública del servidor MicroFix Cloud y sesión del Súper Admin.
 
 # Súper Panel
