@@ -62,7 +62,7 @@ describe("Demo action rules", () => {
       ["Correo del dueño (con él entra a la app)", " ANA@EXAMPLE.TEST "],
       ["Contraseña inicial (8 a 72 caracteres; dásela al cliente)", "test-password"],
       ["WhatsApp del dueño (con lada, p. ej. +5213312345678)", "+5213312345678"],
-    ];
+    ] as const;
     values.forEach(([label, value]) => fireEvent.change(screen.getByLabelText(label), { target: { value } }));
     fireEvent.click(screen.getByRole("button", { name: "Crear demo y mostrar QR" }));
     await waitFor(() => expect(api.createDemo).toHaveBeenCalledWith({
@@ -72,19 +72,27 @@ describe("Demo action rules", () => {
     await waitFor(() => expect(api.demoQr).toHaveBeenCalledWith("demo-2"));
   });
 
-  it("rejects passwords outside 8–72 characters and invalid E.164 phone numbers", () => {
+  it("rejects invalid E.164 phone numbers", () => {
     mount();
     fireEvent.click(screen.getByRole("button", { name: "Nueva demo" }));
-    const password = screen.getByLabelText("Contraseña inicial (8 a 72 caracteres; dásela al cliente)") as HTMLInputElement;
-    // jsdom does not implement min/maxLength validity; browser-style user input
-    // is verified through Playwright, while native phone pattern validity works here.
     const phone = screen.getByLabelText("WhatsApp del dueño (con lada, p. ej. +5213312345678)") as HTMLInputElement;
     fireEvent.change(phone, { target: { value: "3312345678" } });
     expect(phone.checkValidity()).toBe(false);
     fireEvent.change(phone, { target: { value: "+5213312345678" } });
     expect(phone.checkValidity()).toBe(true);
-    expect(password.minLength).toBe(8);
-    expect(password.maxLength).toBe(72);
+  });
+
+  it("clears YCloud credentials when the conversion dialog closes", async () => {
+    api.demos.mockResolvedValue([demo("ACTIVE")]);
+    mount();
+    fireEvent.click(await screen.findByRole("button", { name: "Convertir a cliente" }));
+    fireEvent.change(screen.getByLabelText("API key de YCloud"), { target: { value: "test-key" } });
+    fireEvent.change(screen.getByLabelText("Secreto del webhook de YCloud"), { target: { value: "test-secret" } });
+    fireEvent.click(screen.getByRole("button", { name: "Cerrar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Convertir a cliente" }));
+    expect(screen.getByLabelText("API key de YCloud")).toHaveValue("");
+    expect(screen.getByLabelText("Secreto del webhook de YCloud")).toHaveValue("");
+    expect(api.convertDemo).not.toHaveBeenCalled();
   });
 
   it("stops QR requests when a demo becomes ACTIVE", async () => {
