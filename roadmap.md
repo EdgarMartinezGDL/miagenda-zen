@@ -1,3 +1,8 @@
+# Pantallas del profesional
+- [ ] Agregar conversaciones en pausa, Mi plan y Documentos según el contrato, manteniendo cuatro opciones inferiores.
+- [ ] Verificar contrato, límites, bloqueo por plan y navegación con pruebas y vista previa.
+- [ ] Verificar pausa/reanudación y documentos reales: falta dirección pública del servidor MicroFix Cloud y sesión profesional.
+
 # Demos
 - [x] Agregar tipos, llamadas de API, menú y pantalla del documento sin cambiar otras funciones.
 - [x] Verificar 35 pruebas: contrato, acceso por rol, acciones, normalización de correo, teléfono y limpieza de llaves; /admin/demos redirige sin sesión a /login, sin errores.
