@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
+import { PausedBanner } from "@/components/PausedBanner";
 import { Banner } from "@/components/Banner";
 import { Confirm } from "@/components/Confirm";
 import { Modal } from "@/components/Modal";
@@ -115,6 +116,7 @@ function HoyPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <PausedBanner orgId={orgId} />
       <header className="mb-5">
         <h1 className="text-2xl font-bold tracking-tight">{offset === 0 ? "Hoy" : "Agenda"}</h1>
         <div className="mt-3 flex items-center gap-2">

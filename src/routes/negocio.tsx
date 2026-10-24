@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { PushNotificationsCard } from "@/components/PushNotificationsCard";
+import { DocumentsTab } from "@/components/DocumentsTab";
+import { PlanCard } from "@/components/PlanCard";
 import { Banner } from "@/components/Banner";
 import { Modal } from "@/components/Modal";
 import { Confirm } from "@/components/Confirm";
@@ -60,7 +62,7 @@ export const Route = createFileRoute("/negocio")({
   ),
 });
 
-const TABS = ["Ubicaciones", "Servicios", "Horarios", "Cupo", "Configuración"] as const;
+const TABS = ["Ubicaciones", "Servicios", "Horarios", "Cupo", "Documentos", "Configuración"] as const;
 type Tab = (typeof TABS)[number];
 
 
@@ -92,6 +94,7 @@ function NegocioPage() {
       {tab === "Servicios" && <ServicesTab orgId={orgId} />}
       {tab === "Horarios" && <HoursTab orgId={orgId} />}
       {tab === "Cupo" && <SlotsTab orgId={orgId} />}
+      {tab === "Documentos" && <DocumentsTab orgId={orgId} />}
       {tab === "Configuración" && <SettingsTab orgId={orgId} />}
     </div>
   );
@@ -1403,6 +1406,7 @@ function SettingsTab({ orgId }: { orgId: string }) {
         ))}
       </CardList>
 
+      <PlanCard orgId={orgId} />
       <PushNotificationsCard orgId={orgId} />
 
       {open === "ia" && <AIModal orgId={orgId} onClose={() => setOpen(null)} />}

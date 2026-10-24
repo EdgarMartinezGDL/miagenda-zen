@@ -57,7 +57,9 @@ export async function apiRequest<T>(
   { method = 'GET', body, auth = true }: RequestOptions = {},
 ): Promise<T> {
   const headers: Record<string, string> = {};
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  // FormData (subir archivos): el navegador pone el Content-Type con su boundary.
+  const isForm = body instanceof FormData;
+  if (body !== undefined && !isForm) headers['Content-Type'] = 'application/json';
   const token = auth ? getToken() : null;
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -66,7 +68,7 @@ export async function apiRequest<T>(
     res = await fetch(`${API_URL}${path}`, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : null,
+      body: body === undefined ? null : isForm ? body : JSON.stringify(body),
     });
   } catch {
     throw new ApiError('No se pudo conectar con el servidor', 0);

@@ -38,6 +38,7 @@ import type {
   Theme,
   Appointment,
   NotificationPage,
+  ConversationModeChange, KnowledgeDocument, KnowledgeDocumentList, PausedConversation,
 } from './types';
 
 const qs = (params: Record<string, string | number | boolean | undefined>) => {
@@ -86,6 +87,8 @@ export const organizationApi = {
   get: (orgId: string) => apiRequest<Organization>(`/organizations/${orgId}`),
   /** Sedes, servicios con precios, horarios, IA, branding y políticas en una sola llamada. */
   context: (orgId: string) => apiRequest<OrganizationContext>(`/organizations/${orgId}/context`),
+  /** Lo que permite el plan (5.6.5: tarjeta "Mi plan" y pestaña Documentos). */
+  planFeatures: (orgId: string) => apiRequest<PlanFeatures>(`/organizations/${orgId}/plan-features`),
   updateBranding: (orgId: string, data: UpdateBrandingInput) =>
     apiRequest<Organization>(`/organizations/${orgId}/branding`, { method: 'PATCH', body: data }),
   updateCancellationPolicy: (orgId: string, data: UpdateCancellationPolicyInput) =>
@@ -436,4 +439,32 @@ export const adminApi = {
   /** Solo ACTIVE, EXPIRED o CANCELLED. 409 si el WABA ya es de otra organización. */
   convertDemo: (demoId: string, input: ConvertDemoInput) =>
     apiRequest<DemoConvertResult>(`/demos/${demoId}/convert`, { method: 'POST', body: input }),
+};
+
+// --- Conversaciones en pausa (Fase 5, 5.6.5) ---------------------------------
+// Pacientes que esperan atención humana: la IA no les responde hasta reanudar.
+
+export const pausedApi = {
+  list: (orgId: string) => apiRequest<PausedConversation[]>(`/conversation-context/${orgId}/paused`),
+  /** 400 si el teléfono no es internacional (+52…). Idempotente. */
+  pause: (orgId: string, phone: string) =>
+    apiRequest<ConversationModeChange>(`/conversation-context/${orgId}/pause`, { method: 'POST', body: { phone } }),
+  /** Idempotente. */
+  resume: (orgId: string, phone: string) =>
+    apiRequest<ConversationModeChange>(`/conversation-context/${orgId}/resume`, { method: 'POST', body: { phone } }),
+};
+
+// --- Documentos para la IA (Fase 5, 5.4b / 5.6.5) -----------------------------
+// Solo planes con ragEnabled (Premium). Subir: 403 si el plan no lo incluye o se llegó al límite (message listo).
+
+export const knowledgeApi = {
+  list: (orgId: string) => apiRequest<KnowledgeDocumentList>(`/knowledge/${orgId}/documents`),
+  /** 202: queda PROCESSING; el estado final se ve en list. 409 si ya existe, 413 si pasa de 20 MB. */
+  upload: (orgId: string, file: File) => {
+    const form = new FormData();
+    form.append('file', file);
+    return apiRequest<KnowledgeDocument>(`/knowledge/${orgId}/documents`, { method: 'POST', body: form });
+  },
+  remove: (orgId: string, id: string) =>
+    apiRequest<{ deleted: true }>(`/knowledge/${orgId}/documents/${id}`, { method: 'DELETE' }),
 };
