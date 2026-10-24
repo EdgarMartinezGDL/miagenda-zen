@@ -14,6 +14,7 @@ import { Route as BillingRouteImport } from './routes/billing'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NegocioRouteImport } from './routes/negocio'
+import { Route as PausadosRouteImport } from './routes/pausados'
 import { Route as ReportesRouteImport } from './routes/reportes'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminCalidadRouteImport } from './routes/admin/calidad'
@@ -44,6 +45,11 @@ const NegocioRoute = NegocioRouteImport.update({
   path: '/negocio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PausadosRoute = PausadosRouteImport.update({
+  id: '/pausados',
+  path: '/pausados',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportesRoute = ReportesRouteImport.update({
   id: '/reportes',
   path: '/reportes',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/eventos': typeof EventosRoute
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
+  '/pausados': typeof PausadosRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
   '/admin/demos': typeof AdminDemosRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/eventos': typeof EventosRoute
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
+  '/pausados': typeof PausadosRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
   '/admin/demos': typeof AdminDemosRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/eventos': typeof EventosRoute
   '/login': typeof LoginRoute
   '/negocio': typeof NegocioRoute
+  '/pausados': typeof PausadosRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
   '/admin/demos': typeof AdminDemosRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/eventos'
     | '/login'
     | '/negocio'
+    | '/pausados'
     | '/reportes'
     | '/admin/calidad'
     | '/admin/demos'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/eventos'
     | '/login'
     | '/negocio'
+    | '/pausados'
     | '/reportes'
     | '/admin/calidad'
     | '/admin/demos'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/eventos'
     | '/login'
     | '/negocio'
+    | '/pausados'
     | '/reportes'
     | '/admin/calidad'
     | '/admin/demos'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   EventosRoute: typeof EventosRoute
   LoginRoute: typeof LoginRoute
   NegocioRoute: typeof NegocioRoute
+  PausadosRoute: typeof PausadosRoute
   ReportesRoute: typeof ReportesRoute
   AdminCalidadRoute: typeof AdminCalidadRoute
   AdminDemosRoute: typeof AdminDemosRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NegocioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pausados': {
+      id: '/pausados'
+      path: '/pausados'
+      fullPath: '/pausados'
+      preLoaderRoute: typeof PausadosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reportes': {
       id: '/reportes'
       path: '/reportes'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   EventosRoute: EventosRoute,
   LoginRoute: LoginRoute,
   NegocioRoute: NegocioRoute,
+  PausadosRoute: PausadosRoute,
   ReportesRoute: ReportesRoute,
   AdminCalidadRoute: AdminCalidadRoute,
   AdminDemosRoute: AdminDemosRoute,

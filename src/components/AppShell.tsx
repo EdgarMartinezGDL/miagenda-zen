@@ -97,9 +97,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     if (abrir === "notificaciones") {
       setBellAutoOpen(window.matchMedia("(min-width: 768px)").matches ? "desktop" : "mobile");
     }
-    // "pausados": la lista de pacientes en pausa llega en el bloque 5.6.
     url.searchParams.delete("abrir");
     window.history.replaceState(window.history.state, "", url.toString());
+    // Aviso push de paciente en pausa → su lista.
+    if (abrir === "pausados") navigate({ to: "/pausados" });
   }, []);
 
   const logout = () => setLogoutOpen(true);

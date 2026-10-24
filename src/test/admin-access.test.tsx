@@ -37,6 +37,17 @@ const account = (role: AuthUser["role"], organizationId: string | null): AuthUse
 beforeEach(() => { vi.clearAllMocks(); state.user = null; });
 afterEach(cleanup);
 
+describe("Paused push destination", () => {
+  it("clears abrir and navigates a professional to /pausados", () => {
+    window.history.replaceState({}, "", "/?abrir=pausados");
+    state.user = account("PROFESSIONAL", "org-1");
+    render(<AppShell><Content /></AppShell>);
+    expect(state.navigate).toHaveBeenCalledWith({ to: "/pausados" });
+    expect(new URL(window.location.href).searchParams.has("abrir")).toBe(false);
+    window.history.replaceState({}, "", "/");
+  });
+});
+
 describe("Super-admin access", () => {
   it("allows SUPER_ADMIN with organizationId null into the admin shell", () => {
     state.user = account("SUPER_ADMIN", null);

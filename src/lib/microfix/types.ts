@@ -604,3 +604,43 @@ export interface DemoConvertResult {
   evolutionDeletedAt: string | null;
   evolutionError?: string;
 }
+
+// --- Pantallas del profesional (Fase 5, 5.6.5) ---------------------------------
+
+/** GET /conversation-context/:org/paused — más antiguos primero. */
+export interface PausedConversation {
+  id: string;
+  phone: string; // E.164, p. ej. +5215512345678
+  name: string | null;
+  pausedAt: string;
+  origin: 'WHATSAPP' | 'PANEL' | 'BOT'; // BOT = la IA pidió ayuda o el verificador la pausó
+}
+
+/** POST /conversation-context/:org/pause | resume. changed:false = ya estaba así. */
+export interface ConversationModeChange {
+  phone: string;
+  changed: boolean;
+  previousMode: string;
+  newMode: string;
+}
+
+export type KnowledgeDocumentStatus = 'PROCESSING' | 'READY' | 'FAILED';
+
+export interface KnowledgeDocument {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  status: KnowledgeDocumentStatus;
+  failureReason: string | null; // texto listo para mostrar
+  charCount: number | null;
+  chunkCount: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** GET /knowledge/:org/documents. Los FAILED no cuentan en usage. */
+export interface KnowledgeDocumentList {
+  documents: KnowledgeDocument[];
+  usage: { documents: number; maxDocuments: number; bytes: number; maxBytes: number };
+}
