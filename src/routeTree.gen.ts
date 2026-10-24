@@ -17,6 +17,7 @@ import { Route as NegocioRouteImport } from './routes/negocio'
 import { Route as ReportesRouteImport } from './routes/reportes'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminCalidadRouteImport } from './routes/admin/calidad'
+import { Route as AdminDemosRouteImport } from './routes/admin/demos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const AdminCalidadRoute = AdminCalidadRouteImport.update({
   path: '/admin/calidad',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDemosRoute = AdminDemosRouteImport.update({
+  id: '/admin/demos',
+  path: '/admin/demos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
+  '/admin/demos': typeof AdminDemosRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
+  '/admin/demos': typeof AdminDemosRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/negocio': typeof NegocioRoute
   '/reportes': typeof ReportesRoute
   '/admin/calidad': typeof AdminCalidadRoute
+  '/admin/demos': typeof AdminDemosRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/negocio'
     | '/reportes'
     | '/admin/calidad'
+    | '/admin/demos'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/negocio'
     | '/reportes'
     | '/admin/calidad'
+    | '/admin/demos'
     | '/admin'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/negocio'
     | '/reportes'
     | '/admin/calidad'
+    | '/admin/demos'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   NegocioRoute: typeof NegocioRoute
   ReportesRoute: typeof ReportesRoute
   AdminCalidadRoute: typeof AdminCalidadRoute
+  AdminDemosRoute: typeof AdminDemosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCalidadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/demos': {
+      id: '/admin/demos'
+      path: '/admin/demos'
+      fullPath: '/admin/demos'
+      preLoaderRoute: typeof AdminDemosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   NegocioRoute: NegocioRoute,
   ReportesRoute: ReportesRoute,
   AdminCalidadRoute: AdminCalidadRoute,
+  AdminDemosRoute: AdminDemosRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
