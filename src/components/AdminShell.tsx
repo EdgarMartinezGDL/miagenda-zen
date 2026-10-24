@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Building2, LogOut, Moon, ShieldCheck, Sun } from "lucide-react";
+import { Building2, LogOut, Moon, QrCode, ShieldCheck, Sun } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { useTheme } from "@/lib/theme";
 // tiene organización, por eso no usa AppShell (marca del negocio, campana ni push).
 const NAV = [
   { to: "/admin", label: "Organizaciones", icon: Building2 },
+  { to: "/admin/demos", label: "Demos", icon: QrCode },
   { to: "/admin/calidad", label: "Calidad IA", icon: ShieldCheck },
 ] as const;
 
@@ -120,7 +121,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <main className="px-4 pt-4 pb-28 md:ml-64 md:px-8 md:py-8">{children}</main>
 
       {/* Bottom nav móvil */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] md:hidden">
         {NAV.map(({ to, label, icon: Icon }) => (
           <Link
             key={to}

@@ -14,3 +14,4 @@
 - Device push uses src/lib/microfix/push.ts and a dedicated public/sw.js with no app-shell caching; keep it separate from offline service workers to prevent stale previews.
 
 - Super-admin UI uses AdminShell and the adminApi contract separately from AppShell; backend authorization remains enforced by MicroFix Cloud so organization-free sessions never use business branding or device push.
+- Demo management lives in the AdminShell-protected /admin/demos route and uses adminApi exclusively; QR polling stays scoped to its dialog, and conversion credentials remain transient form state to avoid browser persistence.
