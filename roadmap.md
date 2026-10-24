@@ -1,3 +1,8 @@
+# Demos
+- [ ] Agregar tipos, llamadas de API, menú y pantalla del documento sin cambiar otras funciones.
+- [ ] Verificar contrato, acceso por rol y reglas de acciones y formularios con pruebas.
+- [ ] Verificar creación, QR, cancelación y conversión reales: falta dirección pública del servidor MicroFix Cloud y sesión del Súper Admin.
+
 # Súper Panel
 - [x] Agregar las pantallas y el contrato del archivo entregado, con acceso por rol.
 - [x] Verificar 18 pruebas y redirección de ambas pantallas sin sesión; sin errores de compilación ni ejecución.
