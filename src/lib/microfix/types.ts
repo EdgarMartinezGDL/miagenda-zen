@@ -538,3 +538,69 @@ export interface VerifierRejection {
   unknownTimes: string[];
   paused: boolean; // true = el paciente quedó en atención humana (PREMIUM)
 }
+
+// --- Súper Panel: demos (Fase 5, 5.6.4) ----------------------------------------
+
+export type DemoStatus = 'CREATING' | 'QR_PENDING' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'CONVERTED' | 'PURGED';
+
+/** GET /demos — más nuevas primero (máx. 200), sin las PURGED. */
+export interface AdminDemo {
+  id: string;
+  organizationId: string;
+  organizationName: string;
+  status: DemoStatus;
+  firstConnectionAt: string | null; // al escanear el QR empiezan los 7 días
+  expiresAt: string | null;
+  purgeAt: string | null; // EXPIRED/CANCELLED: cuándo se borran sus datos
+  createdAt: string;
+}
+
+/** POST /demos */
+export interface CreateDemoInput {
+  businessName: string;
+  ownerFullName: string;
+  ownerEmail: string;
+  ownerPassword: string; // 8 a 72 caracteres; el Súper Admin se la da al cliente
+  ownerPhone: string; // E.164, p. ej. +5213312345678
+}
+
+/** POST /demos y GET /demos/:id/qr. qr null + evolutionError = Evolution falló (reintentar con GET …/qr). */
+export interface DemoQrResult {
+  demo: { id: string; organizationId: string; status: DemoStatus };
+  qr: { base64: string | null; code: string | null } | null; // base64 = data:image/png;base64,…
+  evolutionError?: string;
+}
+
+/** POST /demos/:id/cancel (solo QR_PENDING o ACTIVE). */
+export interface DemoCancelResult {
+  demo: { id: string; organizationId: string; status: DemoStatus };
+  purgeAt: string;
+  cancelledOutboundMessages: number;
+  evolutionDeletedAt: string | null;
+  evolutionError?: string;
+}
+
+/** POST /demos/:id/convert (solo ACTIVE, EXPIRED o CANCELLED). Las llaves de YCloud nunca vuelven. */
+export interface ConvertDemoInput {
+  planCode: 'ESSENTIAL' | 'PREMIUM';
+  billingCycle: 'MONTHLY' | 'YEARLY';
+  paymentMethod: 'CARD' | 'BANK_TRANSFER' | 'CASH' | 'WALLET' | 'OTHER';
+  phoneNumber: string; // E.164
+  businessAccountId: string;
+  ycloudApiKey: string;
+  ycloudWebhookSecret: string;
+}
+
+export interface DemoConvertResult {
+  demo: { id: string; organizationId: string; status: DemoStatus };
+  subscription: { planCode: string; billingCycle: string; paymentMethod: string; status: string };
+  integration: {
+    provider: string;
+    phoneNumber: string;
+    businessAccountId: string;
+    hasApiKey: boolean;
+    hasWebhookSecret: boolean;
+  };
+  evolutionDeletedAt: string | null;
+  evolutionError?: string;
+}

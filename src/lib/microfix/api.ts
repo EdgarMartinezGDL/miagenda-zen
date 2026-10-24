@@ -7,6 +7,7 @@
 
 import { apiRequest } from './client';
 import type {
+  AdminDemo, ConvertDemoInput, CreateDemoInput, DemoCancelResult, DemoConvertResult, DemoQrResult,
   AdminOrganization, AiPauseResult, AiUsageReport, PlanChangeResult, PlanFeatures, VerifierRejection,
   AISettings,
   AppointmentStatus,
@@ -424,4 +425,15 @@ export const adminApi = {
   /** Últimos 50 rechazos del verificador; organizationId opcional para filtrar. */
   rejections: (organizationId?: string) =>
     apiRequest<VerifierRejection[]>(`/response-verifier/rejections${qs({ organizationId })}`),
+  /** Demos (5.6.4): más nuevas primero, sin las PURGED. */
+  demos: () => apiRequest<AdminDemo[]>('/demos'),
+  /** 201. 409 si el correo ya existe. Si Evolution falla: qr null + evolutionError (reintentar con demoQr). */
+  createDemo: (input: CreateDemoInput) => apiRequest<DemoQrResult>('/demos', { method: 'POST', body: input }),
+  /** QR nuevo (caduca en segundos). 409 si la demo ya no espera QR o ya está conectada. */
+  demoQr: (demoId: string) => apiRequest<DemoQrResult>(`/demos/${demoId}/qr`),
+  /** Solo QR_PENDING o ACTIVE (409 en otro estado). Sus datos se borran a los 60 días. */
+  cancelDemo: (demoId: string) => apiRequest<DemoCancelResult>(`/demos/${demoId}/cancel`, { method: 'POST' }),
+  /** Solo ACTIVE, EXPIRED o CANCELLED. 409 si el WABA ya es de otra organización. */
+  convertDemo: (demoId: string, input: ConvertDemoInput) =>
+    apiRequest<DemoConvertResult>(`/demos/${demoId}/convert`, { method: 'POST', body: input }),
 };
