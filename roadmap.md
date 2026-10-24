@@ -1,6 +1,6 @@
 # Pantallas del profesional
-- [ ] Agregar conversaciones en pausa, Mi plan y Documentos según el contrato, manteniendo cuatro opciones inferiores.
-- [ ] Verificar contrato, límites, bloqueo por plan y navegación con pruebas y vista previa.
+- [x] Agregar conversaciones en pausa, Mi plan y Documentos según el contrato, manteniendo cuatro opciones inferiores.
+- [x] Verificar 54 pruebas aprobadas: contrato, límite de 20 MB, bloqueo por plan, pausa/reanudación, FormData y destino push; vista previa sin errores y acceso protegido a /pausados y /negocio.
 - [ ] Verificar pausa/reanudación y documentos reales: falta dirección pública del servidor MicroFix Cloud y sesión profesional.
 
 # Demos
